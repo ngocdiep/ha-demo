@@ -1,0 +1,23 @@
+{
+    "/api/graphql": {
+        "target": "http://localhost:3000",
+        "secure": false,
+        "pathRewrite": {
+            "^/api": ""
+        }
+    },
+    "/api/upload": {
+        "target": "http://localhost:3000",
+        "secure": false,
+        "pathRewrite": {
+            "^/api": ""
+        }
+    },
+    "/api/storage": {
+        "target": "http://localhost:3000",
+        "secure": false,
+        "pathRewrite": {
+            "^/api": ""
+        }
+    }
+}

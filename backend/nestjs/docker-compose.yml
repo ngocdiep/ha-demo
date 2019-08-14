@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  ha-demo:
+    image: ha-demo
+    build: .
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://postgres:ha-demo@db:5432/ha-demo
+      GRAPHQL_URL: http://ha-demo:3000/graphql
+      RETRY_TIMES: 4
+      RETRY_AFTER_X_SECONDS: 4
+    volumes:
+      - ./uploadedFiles:/usr/src/uploadedFiles
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    restart: always
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: ha-demo
+      POSTGRES_PASSWORD: ha-demo
+    volumes:
+    - ./postgres-data:/var/lib/postgresql/data

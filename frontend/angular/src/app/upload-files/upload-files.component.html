@@ -1,0 +1,83 @@
+<input *ngIf="type === 'repeatOne'" type="file" #file style="display: none" (change)="onFilesAdded()"
+  accept="image/x-png,image/gif,image/jpeg,image/*,video/mp4,video/x-m4v,video/*" />
+<input *ngIf="type === 'multi'" type="file" #file style="display: none" (change)="onFilesAdded()" multiple
+  accept="image/x-png,image/gif,image/jpeg,image/*,video/mp4,video/x-m4v,video/*" />
+
+<div class="container" fxLayout="column" fxLayoutAlign="space-evenly stretch">
+  <h1>Upload Image / Video Files</h1>
+  <div>
+    <form class="example-form" [formGroup]="uploadForm">
+
+      <mat-form-field>
+        <input type="number" matInput placeholder="Period in milliseconds" formControlName="period" min="1000"
+          max="10000">
+        <mat-error *ngIf="f.period.touched && f.period.errors">
+          Input min: 1000, max: 10000
+        </mat-error>
+      </mat-form-field>
+
+      <br /><br />
+
+      <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" formControlName="type">
+        <mat-radio-button value="multi" style="margin-right: 40px;">
+          Multiple selection
+        </mat-radio-button>
+        <mat-radio-button value="repeatOne">
+          Repeat one upload
+        </mat-radio-button>
+        <mat-form-field *ngIf="type === 'repeatOne'" style="margin-left: 20px">
+          <input type="number" matInput placeholder="Times" formControlName="timesRepeat" min="1" max="100">
+          <mat-error *ngIf="f.timesRepeat.touched && f.timesRepeat.errors">
+            Input min: 1, max: 100
+          </mat-error>
+        </mat-form-field>
+      </mat-radio-group>
+
+      <br /><br />
+
+      <button *ngIf="type === 'multi'" [disabled]="uploading" mat-raised-button color="primary" class="add-files-btn"
+        (click)="addFiles()">
+        Select Multi Files
+      </button>
+      <button *ngIf="type === 'repeatOne'" [disabled]="uploading" mat-raised-button color="primary"
+        class="add-files-btn" (click)="addFiles()">
+        Select One File
+      </button>
+      <br /><br />
+
+      <div *ngIf="files && !uploadDone">
+        <button mat-raised-button color="primary" [disabled]="uploading" (click)="onSubmit()">Upload</button>
+        <span *ngIf="uploading" style="padding-left: 10px; font-weight: bold">Uploading...</span>
+      </div>
+    </form>
+  </div>
+
+  <div fxFlex *ngIf="uploadOutput">
+    <div *ngIf="uploadDone && uploadOutput" style="padding: 10px 0">
+      <button mat-raised-button color="primary" (click)="onClearResults()">Clear results</button>
+    </div>
+    <ng-container *ngFor="let key of objectKeys(uploadOutput)">
+      <mat-card class="example-card">
+        <mat-card-header>
+          <mat-card-title>{{uploadOutput[key].fileName}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-progress-bar
+            *ngIf="uploadOutput[key].progress && !uploadOutput[key].storedFile && !uploadOutput[key].error"
+            mode="determinate" [value]="uploadOutput[key].progress | async"></mat-progress-bar>
+          <mat-error *ngIf="uploadOutput[key].error">
+            {{uploadOutput[key].error}}
+          </mat-error>
+          <p *ngIf="uploadOutput[key].storedFile" style="word-break: break-all">
+            Generated id: {{uploadOutput[key].storedFile.id}}
+            MetaData: {{uploadOutput[key].storedFile.metaData}}
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button *ngIf="uploadOutput[key].error" mat-raised-button color="primary"
+            (click)="onRetry(key)">Retry</button>
+        </mat-card-actions>
+      </mat-card>
+    </ng-container>
+  </div>
+</div>

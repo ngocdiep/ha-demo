@@ -1,0 +1,20 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+    <ng-container *ngIf="!error else showError">
+        <div *ngIf="storedFileList && storedFileList.data && storedFileList.data.totalCount > 0 else informNoData" class="stored-file-list" fxFlexAlign="center">
+            <app-stored-file-list [storedFileList]="storedFileList"></app-stored-file-list>
+            <mat-paginator (page)="onChangePage($event)" [length]="storedFileList.data.totalCount" [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 25, 100]" [showFirstLastButtons]="true">
+            </mat-paginator>
+        </div>
+        <ng-template #informNoData>
+            <div style="text-align: center; font-size: 20px; padding: 30px">There's no data to show. Upload some images / videos to view.</div>
+        </ng-template>
+        
+    </ng-container>
+    <ng-template #showError>
+        <div fxFlexAlign="center" style="margin: 30px 0">
+            <mat-error>{{error}}</mat-error>
+        </div>
+    </ng-template>
+
+</section>

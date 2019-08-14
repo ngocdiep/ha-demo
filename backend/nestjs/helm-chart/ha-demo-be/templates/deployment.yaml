@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ha-demo-be.fullname" . }}
+  labels:
+{{ include "ha-demo-be.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "ha-demo-be.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "ha-demo-be.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      initContainers:
+        - name: postgresql-client
+          image: tmaier/postgresql-client
+          env:
+          - name: PGPASSWORD
+            valueFrom:
+                secretKeyRef:
+                  name: ha-demo-db-auth
+                  key: POSTGRES_PASSWORD
+          command: ["/bin/sh","-c"]
+          args: [
+            "
+            psql -h ha-demo-db.demo -w -U postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'ha-demo'\" | grep -q 1
+            || (psql -h ha-demo-db.demo -U postgres
+                    -c \"CREATE DATABASE \\\"ha-demo\\\"\"
+                    -c \"create user \\\"ha-demo\\\" with encrypted password 'ha-demo'\"
+                    -c \"grant all privileges on database \\\"ha-demo\\\" to \\\"ha-demo\\\"\"
+                    -c \"ALTER DATABASE \\\"ha-demo\\\" OWNER TO \\\"ha-demo\\\"\";);
+            "
+          ]
+          volumeMounts:
+          - mountPath: "/usr/src/app/uploadedFiles"
+            name: storage
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                key:  DATABASE_URL
+                name: {{ .Release.Name }}-postgresql-connection
+          - name: GRAPHQL_URL
+            value: {{ .Values.GRAPHQL_URL }}
+          - name: RETRY_TIMES
+            value: {{ .Values.RETRY_TIMES | quote }}
+          - name: RETRY_AFTER_X_SECONDS
+            value: {{ .Values.RETRY_AFTER_X_SECONDS | quote }}
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: ha-demo-storage

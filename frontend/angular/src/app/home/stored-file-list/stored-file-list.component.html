@@ -1,0 +1,39 @@
+<ng-container *ngIf="storedFileList && storedFileList.data; else showLoading">
+
+    <ng-container *ngFor="let item of storedFileList.data.nodes; let i=index;">
+
+        <mat-card class="example-card">
+            <mat-card-header>
+                <div mat-card-avatar class="example-header-image"></div>
+                <mat-card-title>{{item.id}}</mat-card-title>
+            </mat-card-header>
+            <ng-container *ngIf="item.metaData">
+                <span [ngSwitch]="convertToJSON(item.metaData).mimetype">
+                    <p *ngSwitchCase="'image/png'">
+                        <img mat-card-image src="/api/storage/{{item.id}}" alt="item.id">
+                    </p>
+                    <p *ngSwitchCase="'video/mp4'">
+                        <video mat-card-image controls>
+                            <source src="/api/storage/{{item.id}}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </p>
+                    <p *ngSwitchDefault>
+                        
+                    </p>
+                </span>
+            </ng-container>
+            <mat-card-content>
+                <p style="word-break: break-all">
+                    MetaData: {{item.metaData}}
+                </p>
+                <p>
+                    Status: {{item.status}}
+                </p>
+            </mat-card-content>
+        </mat-card>
+    </ng-container>
+</ng-container>
+<ng-template #showLoading>
+    loading...
+</ng-template>

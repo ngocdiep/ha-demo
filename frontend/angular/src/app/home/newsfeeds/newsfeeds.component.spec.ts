@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StoredFileListComponent } from './stored-file-list.component';
+import { NewsfeedsComponent } from './newsfeeds.component';
 
-describe('StoredFileListComponent', () => {
-  let component: StoredFileListComponent;
-  let fixture: ComponentFixture<StoredFileListComponent>;
+describe('NewsfeedsComponent', () => {
+  let component: NewsfeedsComponent;
+  let fixture: ComponentFixture<NewsfeedsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StoredFileListComponent ]
+      declarations: [ NewsfeedsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StoredFileListComponent);
+    fixture = TestBed.createComponent(NewsfeedsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

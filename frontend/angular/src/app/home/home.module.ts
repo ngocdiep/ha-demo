@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
-import { StoredFileListComponent } from './stored-file-list/stored-file-list.component';
+import { NewsfeedsComponent } from './newsfeeds/newsfeeds.component';
 import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
-  declarations: [HomeComponent, StoredFileListComponent],
+  declarations: [HomeComponent, NewsfeedsComponent],
   imports: [
     CommonModule,
     HomeRoutingModule,

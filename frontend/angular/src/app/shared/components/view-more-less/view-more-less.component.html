@@ -1,0 +1,6 @@
+<p class="container" [class.show]="isShowMore">{{ content }}</p>
+<div *ngIf="!isShowMore">
+    ...
+    <button (click)="isShowMore = !isShowMore" mat-button
+        color="primary">{{ isShowMore ? 'Show less': 'Show More' }}</button>
+</div>

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Paging } from '../core';
-import { StoredFileService } from './shared/stored-file.service';
+import { NewsfeedService } from './shared/newsfeed.service';
 import { finalize } from 'rxjs/operators';
-import { StoredFileList } from './shared/stored-file-list.model';
+import { Newsfeeds } from './shared/newsfeeds.model';
 
 @Component({
   selector: 'app-home',
@@ -16,10 +16,10 @@ export class HomeComponent implements OnInit {
     offset: 0,
     first: 10
   };
-  storedFileList: StoredFileList = {};
+  newsfeeds: Newsfeeds = {};
 
   constructor(
-    private storedFileService: StoredFileService,
+    private storedFileService: NewsfeedService,
   ) { }
 
   ngOnInit() {
@@ -28,10 +28,10 @@ export class HomeComponent implements OnInit {
 
   getStoredFiles() {
     this.storedFileService.getPage(this.paging).pipe(
-      finalize(() => this.storedFileList.loading = false)
+      finalize(() => this.newsfeeds.loading = false)
     ).subscribe(
       (result: any) => {
-        this.storedFileList.data = result.data.allStoredFiles;
+        this.newsfeeds.data = result.data.allStoredFiles;
       },
       error => {
         this.error = 'Error occurred when getting the data.';

@@ -26,7 +26,7 @@ query ($offset: Int, $first: Int) {
 @Injectable({
   providedIn: 'root'
 })
-export class StoredFileService {
+export class NewsfeedService {
 
   constructor(
     private apollo: Apollo,

@@ -1,6 +1,6 @@
-<ng-container *ngIf="storedFileList && storedFileList.data; else showLoading">
+<ng-container *ngIf="newsfeeds && newsfeeds.data; else showLoading">
 
-    <ng-container *ngFor="let item of storedFileList.data.nodes; let i=index;">
+    <ng-container *ngFor="let item of newsfeeds.data.nodes; let i=index;">
 
         <mat-card class="example-card">
             <mat-card-header>
@@ -25,7 +25,7 @@
             </ng-container>
             <mat-card-content>
                 <p style="word-break: break-all">
-                    MetaData: {{item.metaData}}
+                    <app-view-more-less [content]="item.metaData"></app-view-more-less>
                 </p>
                 <p>
                     Status: {{item.status}}

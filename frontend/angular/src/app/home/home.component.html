@@ -1,8 +1,8 @@
 <section fxLayout="column" fxFlexAlign="stretch">
     <ng-container *ngIf="!error else showError">
-        <div *ngIf="storedFileList && storedFileList.data && storedFileList.data.totalCount > 0 else informNoData" class="stored-file-list" fxFlexAlign="center">
-            <app-stored-file-list [storedFileList]="storedFileList"></app-stored-file-list>
-            <mat-paginator (page)="onChangePage($event)" [length]="storedFileList.data.totalCount" [pageSize]="10"
+        <div *ngIf="newsfeeds && newsfeeds.data && newsfeeds.data.totalCount > 0 else informNoData" class="newsfeeds" fxFlexAlign="center">
+            <app-newsfeeds [newsfeeds]="newsfeeds"></app-newsfeeds>
+            <mat-paginator (page)="onChangePage($event)" [length]="newsfeeds.data.totalCount" [pageSize]="10"
                 [pageSizeOptions]="[5, 10, 25, 100]" [showFirstLastButtons]="true">
             </mat-paginator>
         </div>

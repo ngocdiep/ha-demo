@@ -10,4 +10,4 @@ COPY --from=backend ./backend/dist ./
 COPY ./migrations/* ./migrations/
 COPY package.json ./
 EXPOSE 3000
-CMD ["sh", "-c", "npm run migrate && npm run start:prop-k8s"]
+CMD ["sh", "-c", "npm run migrate && npm run start:prod-k8s"]
